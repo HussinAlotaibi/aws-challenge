@@ -2,13 +2,20 @@
 set -e
 cd /opt/app
 
-# Ensure app.sh exists for gunicorn EnvironmentFile
+# Write systemd-compatible env file (no 'export' keyword — EnvironmentFile requires plain KEY=VALUE)
+cat > /etc/sysconfig/gunicorn << ENVEOF
+AWS_REGION=eu-central-1
+SECRET_NAME=aws-challenge/rds-credentials
+S3_BUCKET=aws-challenge-905813140854
+ENVEOF
+
+# Also keep app.sh for bash scripts that source it
 if [ ! -f /etc/profile.d/app.sh ]; then
-  cat > /etc/profile.d/app.sh << ENVEOF
+  cat > /etc/profile.d/app.sh << ENVEOF2
 export AWS_REGION="eu-central-1"
 export SECRET_NAME="aws-challenge/rds-credentials"
 export S3_BUCKET="aws-challenge-905813140854"
-ENVEOF
+ENVEOF2
 fi
 
 # Ensure nginx is installed and running
@@ -24,7 +31,7 @@ After=network.target
 [Service]
 User=ec2-user
 WorkingDirectory=/opt/app
-EnvironmentFile=/etc/profile.d/app.sh
+EnvironmentFile=/etc/sysconfig/gunicorn
 ExecStart=/usr/local/bin/gunicorn config.wsgi:application --bind 127.0.0.1:8000 --workers 2
 Restart=always
 
