@@ -35,4 +35,32 @@ EOF
 systemctl daemon-reload
 systemctl enable gunicorn
 systemctl start gunicorn
+
+# Write nginx proxy config (in case user_data failed to do it)
+cat > /etc/nginx/conf.d/app.conf << 'NGINX'
+server {
+    listen 80;
+    server_name _;
+
+    location /health/ {
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+    location /static/ {
+        alias /opt/app/staticfiles/;
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
+    }
+}
+NGINX
+
+rm -f /etc/nginx/conf.d/default.conf
 systemctl restart nginx

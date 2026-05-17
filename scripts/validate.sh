@@ -1,3 +1,3 @@
 #!/bin/bash
-sleep 5
+sleep 15
 curl -sf http://localhost/health/ || exit 1
