@@ -50,7 +50,28 @@ for i in 1 2 3 4 5; do
   systemctl is-active gunicorn > /dev/null 2>&1 && break
 done
 
-# Write nginx proxy config (in case user_data failed to do it)
+# Replace nginx.conf with minimal config (removes built-in default server block
+# that conflicts with our app.conf on Amazon Linux 2023)
+cat > /etc/nginx/nginx.conf << 'NGINXMAIN'
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log;
+pid /run/nginx.pid;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+    sendfile      on;
+    keepalive_timeout 65;
+    include /etc/nginx/conf.d/*.conf;
+}
+NGINXMAIN
+
+# Write nginx proxy config
 cat > /etc/nginx/conf.d/app.conf << 'NGINX'
 server {
     listen 80;
