@@ -8,7 +8,7 @@ cloud-init status --wait || true
 if [ -f /etc/profile.d/app.sh ]; then
   source /etc/profile.d/app.sh
 else
-  export AWS_REGION=$(curl -s http://169.254.169.254/latest/meta-data/placement/region)
+  export AWS_REGION="eu-central-1"
   export SECRET_NAME="aws-challenge/rds-credentials"
   export S3_BUCKET="aws-challenge-905813140854"
 fi

@@ -4,9 +4,8 @@ cd /opt/app
 
 # Ensure app.sh exists for gunicorn EnvironmentFile
 if [ ! -f /etc/profile.d/app.sh ]; then
-  REGION=$(curl -s http://169.254.169.254/latest/meta-data/placement/region)
   cat > /etc/profile.d/app.sh << ENVEOF
-export AWS_REGION="$REGION"
+export AWS_REGION="eu-central-1"
 export SECRET_NAME="aws-challenge/rds-credentials"
 export S3_BUCKET="aws-challenge-905813140854"
 ENVEOF
