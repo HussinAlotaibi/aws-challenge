@@ -41,7 +41,14 @@ EOF
 
 systemctl daemon-reload
 systemctl enable gunicorn
+systemctl reset-failed gunicorn 2>/dev/null || true
 systemctl start gunicorn
+
+# Wait up to 10s for gunicorn to come up
+for i in 1 2 3 4 5; do
+  sleep 2
+  systemctl is-active gunicorn > /dev/null 2>&1 && break
+done
 
 # Write nginx proxy config (in case user_data failed to do it)
 cat > /etc/nginx/conf.d/app.conf << 'NGINX'
