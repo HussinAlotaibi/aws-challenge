@@ -20,7 +20,7 @@ systemctl enable codedeploy-agent
 systemctl start codedeploy-agent
 
 # Python packages
-pip3 install django gunicorn mysqlclient boto3 django-storages
+pip3 install django gunicorn PyMySQL boto3 django-storages
 
 # App directory
 mkdir -p /opt/app

@@ -13,7 +13,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "aws-challenge-tfstate"
+    bucket         = "aws-challenge-tfstate-905813140854"
     key            = "aws-challenge/terraform.tfstate"
     region         = "eu-central-1"
     dynamodb_table = "terraform-state-lock"
