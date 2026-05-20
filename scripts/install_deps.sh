@@ -4,6 +4,11 @@ set -e
 # Wait for cloud-init, don't fail if it errors
 cloud-init status --wait || true
 
+# Install and start SSM agent if not already installed
+dnf install -y amazon-ssm-agent 2>/dev/null || true
+systemctl enable amazon-ssm-agent 2>/dev/null || true
+systemctl start amazon-ssm-agent 2>/dev/null || true
+
 # Load env vars — fall back to deriving them if app.sh missing
 if [ -f /etc/profile.d/app.sh ]; then
   source /etc/profile.d/app.sh
