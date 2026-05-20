@@ -19,6 +19,10 @@ chmod +x ./install
 systemctl enable codedeploy-agent
 systemctl start codedeploy-agent
 
+# SSM agent (pre-installed on AL2023, just needs to be enabled)
+systemctl enable amazon-ssm-agent
+systemctl start amazon-ssm-agent
+
 # Python packages
 pip3 install django gunicorn PyMySQL boto3 django-storages
 
