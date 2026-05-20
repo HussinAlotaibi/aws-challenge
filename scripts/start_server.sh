@@ -1,5 +1,10 @@
 #!/bin/bash
 set -e
+
+# Ensure SSM agent is running (pre-installed on AL2023 but not always started)
+systemctl enable amazon-ssm-agent 2>/dev/null || true
+systemctl start amazon-ssm-agent 2>/dev/null || true
+
 cd /opt/app
 
 # Write systemd-compatible env file (no 'export' keyword — EnvironmentFile requires plain KEY=VALUE)
